@@ -8,19 +8,21 @@ import com.itextpdf.text.pdf.PdfWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public class JavaPdf {
+public class RecipePdf {
 
     public static void main(String[] args) throws IOException, DocumentException {
+        var recipePdf = new RecipePdf();
         var recipe = RecipeFactory.getScrambledEggsRecipe();
-        printRecipe(recipe);
+        recipePdf.printRecipe(recipe);
     }
 
-    private static void printRecipe(Recipe recipe) throws IOException, DocumentException {
+    String printRecipe(Recipe recipe) throws IOException, DocumentException {
         var document = new Document();
+        var filePath = createFilePath(recipe);
         var writer = PdfWriter.getInstance(
                 document,
                 new FileOutputStream(
-                        createFilePath(recipe)
+                        filePath
                 )
         );
         document.open();
@@ -31,6 +33,7 @@ public class JavaPdf {
         addSteps(document, recipe);
         document.close();
         writer.close();
+        return filePath;
     }
 
     private static String createFilePath(Recipe recipe) {
