@@ -2,9 +2,11 @@
 # https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 
 [versions]
-itext-itext = "5.5.13.2"
-junit-jupiter = "5.10.0"
+itext-itext = "5.5.13.3"
+assertj-core = "3.25.3"
+junit-jupiter = "5.10.2"
 
 [libraries]
 itext = { module = "com.itextpdf:itextpdf", version.ref = "itext-itext" }
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj-core" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
