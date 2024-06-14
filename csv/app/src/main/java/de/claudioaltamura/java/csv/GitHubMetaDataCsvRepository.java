@@ -1,19 +1,13 @@
 package de.claudioaltamura.java.csv;
 
-import com.opencsv.CSVParser;
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
+import com.opencsv.*;
 import com.opencsv.exceptions.CsvValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,11 +18,8 @@ public class GitHubMetaDataCsvRepository implements GitHubMetaDataRepository{
     @Override
     public List<GitHubMetaData> getMetaDataList(InputStream inputStream) {
         Objects.requireNonNull(inputStream);
-
         logger.debug("get csv");
-
         final var metaDataList = new ArrayList<GitHubMetaData>();
-
         final CSVParser csvParser = new CSVParserBuilder().withSeparator(',').build();
         try (Reader inputStreamReader = new InputStreamReader(inputStream);
              CSVReader csvReader = new CSVReaderBuilder(inputStreamReader)
@@ -50,7 +41,25 @@ public class GitHubMetaDataCsvRepository implements GitHubMetaDataRepository{
     }
 
     @Override
-    public void saveMetaDataList(List<GitHubMetaData> metadata) {
-        throw new UnsupportedOperationException();
+    public void saveMetaDataList(List<GitHubMetaData> metadataList, OutputStream outputStream) {
+        Objects.requireNonNull(metadataList);
+        Objects.requireNonNull(outputStream);
+        try (OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
+             CSVWriter writer = new CSVWriter(outputStreamWriter)) {
+            writer.writeNext(new String[] {"Library","Github Stars","Forks","Watchers"});
+            for (GitHubMetaData metaData : metadataList) {
+                writer.writeNext(
+                        new String[]{
+                                metaData.library(),
+                                String.valueOf(metaData.stars()),
+                                String.valueOf(metaData.forks()),
+                                String.valueOf(metaData.watchers())
+                        }
+                );
+            }
+        } catch (IOException e) {
+            throw new GitHubMetaDataRepositoryException(e);
+        }
     }
+
 }

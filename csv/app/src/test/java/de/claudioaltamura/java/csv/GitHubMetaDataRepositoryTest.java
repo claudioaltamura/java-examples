@@ -3,26 +3,58 @@ package de.claudioaltamura.java.csv;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import static de.claudioaltamura.java.csv.CsvDataProvider.getMetaDataList;
+
 class GitHubMetaDataRepositoryTest {
 
     @Test
-    @DisplayName("null check inputstream")
-    void shouldThrowExceptionIfInputStreamIsNull() {
+    @DisplayName("null check inputstream get")
+    void shouldThrowExceptionForGetIfInputStreamIsNull() {
         final InputStream inputStream = GitHubMetaDataRepositoryTest.class.getResourceAsStream("non-existing.csv");
-        var gitHubMetaDataCsvRepository = new GitHubMetaDataCsvRepository();
-        assertThrows(NullPointerException.class, () -> gitHubMetaDataCsvRepository.getMetaDataList(inputStream));
+        final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
+        assertThrows(NullPointerException.class, () -> gitHubMetaDataRepository.getMetaDataList(inputStream));
     }
 
     @Test
     @DisplayName("return metadata list")
     void shouldReturnMetadataList() {
         final InputStream inputStream = GitHubMetaDataRepositoryTest.class.getResourceAsStream("/github-metadata.csv");
-        var gitHubMetaDataCsvRepository = new GitHubMetaDataCsvRepository();
-        assertThat(gitHubMetaDataCsvRepository.getMetaDataList(inputStream)).isNotNull();
+        final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
+        assertThat(gitHubMetaDataRepository.getMetaDataList(inputStream)).isNotNull();
     }
+
+    @Test
+    @DisplayName("null check inputstream save")
+    void shouldThrowExceptionForSaveIfOutputStreamIsNull() {
+        final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
+        final OutputStream outputStream = null;
+        assertThrows(NullPointerException.class, () -> gitHubMetaDataRepository.saveMetaDataList(getMetaDataList(), outputStream));
+    }
+
+    @Test
+    @DisplayName("save metadata list")
+    void shouldSaveMetadataList() throws IOException {
+        String tmpDir = Files.createTempDirectory("CsvWriterTest").toFile().getAbsolutePath();
+        final String fileName = "test.csv";
+        final Path path = Paths.get(tmpDir, fileName);
+
+        final OutputStream outputStream = Files.newOutputStream(Path.of(path.toString()));
+        final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
+        gitHubMetaDataRepository.saveMetaDataList(getMetaDataList(), outputStream);
+
+        final InputStream inputStream = new FileInputStream(path.toString());
+        assertThat(gitHubMetaDataRepository.getMetaDataList(inputStream)).isNotNull();
+    }
+
 }

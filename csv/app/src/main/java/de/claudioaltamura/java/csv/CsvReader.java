@@ -11,8 +11,8 @@ public class CsvReader {
 
     public static void main(String[] args) {
         final InputStream inputStream = CsvReader.class.getResourceAsStream("/github-metadata.csv");
-        var gitHubMetaDataCsvRepository = new GitHubMetaDataCsvRepository();
-        var metaDataList = gitHubMetaDataCsvRepository.getMetaDataList(inputStream);
+        final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
+        var metaDataList = gitHubMetaDataRepository.getMetaDataList(inputStream);
         for(GitHubMetaData data : metaDataList) {
             logger.info(data.toString());
         }
