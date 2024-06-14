@@ -24,6 +24,9 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
     // This dependency is used by the application.
+    implementation(libs.logback.core)
+    implementation(libs.logback.classic)
+    implementation(libs.slf4j.api)
     implementation(libs.opencsv)
 }
 
