@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static de.claudioaltamura.java.csv.CsvDataProvider.getMetaDataList;
@@ -35,11 +35,10 @@ class GitHubMetaDataRepositoryTest {
     }
 
     @Test
-    @DisplayName("null check inputstream save")
+    @DisplayName("null check outputstream save")
     void shouldThrowExceptionForSaveIfOutputStreamIsNull() {
         final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
-        final OutputStream outputStream = null;
-        assertThrows(NullPointerException.class, () -> gitHubMetaDataRepository.saveMetaDataList(getMetaDataList(), outputStream));
+        assertThatThrownBy(() -> gitHubMetaDataRepository.saveMetaDataList(getMetaDataList(), null)).isInstanceOf(NullPointerException.class);
     }
 
     @Test
