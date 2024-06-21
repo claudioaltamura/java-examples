@@ -3,9 +3,9 @@ package de.claudioaltamura.java.csv;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CsvDataProvider {
+public class GitHubMetaDataProvider {
 
-    private CsvDataProvider() {}
+    private GitHubMetaDataProvider() {}
 
     static List<GitHubMetaData> getMetaDataList() {
         final List<GitHubMetaData> metaDataList = new ArrayList<>();

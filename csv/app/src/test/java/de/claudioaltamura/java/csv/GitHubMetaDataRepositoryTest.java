@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import static de.claudioaltamura.java.csv.CsvDataProvider.getMetaDataList;
+import static de.claudioaltamura.java.csv.GitHubMetaDataProvider.getMetaDataList;
 
 class GitHubMetaDataRepositoryTest {
 
@@ -35,6 +35,15 @@ class GitHubMetaDataRepositoryTest {
     }
 
     @Test
+    @DisplayName("checks if CsvValidationException is caught")
+    void shouldCatchCsvValidationException() {
+        final InputStream inputStream = GitHubMetaDataRepositoryTest.class.getResourceAsStream("/github-metadata-corrupt.csv");
+        final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
+        assertThrows(GitHubMetaDataRepositoryException.class, () -> gitHubMetaDataRepository.getMetaDataList(inputStream));
+    }
+
+
+    @Test
     @DisplayName("null check outputstream save")
     void shouldThrowExceptionForSaveIfOutputStreamIsNull() {
         final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
@@ -44,16 +53,32 @@ class GitHubMetaDataRepositoryTest {
     @Test
     @DisplayName("save metadata list")
     void shouldSaveMetadataList() throws IOException {
-        String tmpDir = Files.createTempDirectory("CsvWriterTest").toFile().getAbsolutePath();
         final String fileName = "test.csv";
-        final Path path = Paths.get(tmpDir, fileName);
+        final Path path = Paths.get(createTempDirectory("shouldSaveMetadataList"), fileName);
 
-        final OutputStream outputStream = Files.newOutputStream(Path.of(path.toString()));
+        final OutputStream outputStream = Files.newOutputStream(path);
         final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
         gitHubMetaDataRepository.saveMetaDataList(getMetaDataList(), outputStream);
 
         final InputStream inputStream = new FileInputStream(path.toString());
         assertThat(gitHubMetaDataRepository.getMetaDataList(inputStream)).isNotNull();
+    }
+
+    @Test
+    @DisplayName("check if IOException is caught")
+    void shouldCaughtIOException() throws IOException {
+        final String fileName = "test.csv";
+        final Path path = Paths.get(createTempDirectory("shouldCaughtIOException"), fileName);
+
+        final OutputStream outputStream = Files.newOutputStream(path);
+        outputStream.close();
+        final GitHubMetaDataRepository gitHubMetaDataRepository = new GitHubMetaDataCsvRepository();
+
+        assertThrows(GitHubMetaDataRepositoryException.class, () -> gitHubMetaDataRepository.saveMetaDataList(getMetaDataList(), outputStream));
+    }
+
+    private String createTempDirectory(String testName) throws IOException {
+        return Files.createTempDirectory(testName).toFile().getAbsolutePath();
     }
 
 }

@@ -7,6 +7,7 @@ logback-classic = "1.5.6"
 slf4j-api = "2.0.13"
 opencsv-opencsv = "5.9"
 
+mockito-junit-jupiter = "5.12.0"
 assertj-core = "3.25.3"
 junit-jupiter = "5.10.2"
 
@@ -15,5 +16,6 @@ slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j-api" }
 logback-core = { module = "ch.qos.logback:logback-core", version.ref = "logback-core" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback-classic" }
 opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsv-opencsv" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito-junit-jupiter" }
 assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj-core" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
