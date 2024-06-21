@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static de.claudioaltamura.java.csv.CsvDataProvider.getMetaDataList;
+import static de.claudioaltamura.java.csv.GitHubMetaDataProvider.getMetaDataList;
 
 public class CsvWriter {
 
