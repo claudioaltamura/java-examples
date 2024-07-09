@@ -6,21 +6,19 @@ import java.security.*;
 import java.util.Base64;
 
 public class DigitalSignatureExample {
-    // Schlüsselpaar erzeugen
+
     public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(2048);
         return keyGen.generateKeyPair();
     }
 
-    // Datei-Hash erstellen
     public static byte[] getFileHash(String filePath) throws NoSuchAlgorithmException, IOException {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
         return digest.digest(fileContent);
     }
 
-    // Signatur erstellen
     public static byte[] signFile(byte[] hash, PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initSign(privateKey);
@@ -28,12 +26,10 @@ public class DigitalSignatureExample {
         return signature.sign();
     }
 
-    // Signatur verifizieren
     public static boolean verifySignature(byte[] hash, byte[] signatureBytes, PublicKey publicKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         Signature signature = Signature.getInstance("SHA256withRSA");
         signature.initVerify(publicKey);
         signature.update(hash);
-        System.out.println(signature.toString());
         return signature.verify(signatureBytes);
     }
 
