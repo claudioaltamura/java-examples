@@ -5,6 +5,8 @@ import java.nio.file.*;
 import java.security.*;
 import java.util.Base64;
 
+import static de.claudio.altamura.java.digital.signature.SignatureHelper.getCurrentRelativePathAsString;
+
 public class DigitalSignatureExample {
 
     public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
@@ -41,9 +43,7 @@ public class DigitalSignatureExample {
             PublicKey publicKey = keyPair.getPublic();
 
             // 2. Hash
-            Path currentRelativePath = Paths.get("");
-            String currentRelativePathAsString = currentRelativePath.toAbsolutePath().toString();
-            System.out.println("Current absolute path is: " + currentRelativePathAsString);
+            var currentRelativePathAsString = getCurrentRelativePathAsString();
             String filePath = currentRelativePathAsString + "/digital-signature/example.txt";
             byte[] fileHash = getFileHash(filePath);
 
@@ -62,4 +62,5 @@ public class DigitalSignatureExample {
             e.printStackTrace();
         }
     }
+
 }
