@@ -1,38 +1,23 @@
 package de.claudio.altamura.java.digital.signature;
 
-import java.io.IOException;
 import java.nio.file.*;
 import java.security.*;
 import java.util.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static de.claudio.altamura.java.digital.signature.SignatureHelper.getCurrentRelativePathAsString;
+import static de.claudio.altamura.java.digital.signature.DigitalSignatureUtils.*;
 
-public class DigitalSignatureExample {
+public class GeneratedKeyExample {
 
-    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
+    private static final Logger logger = LoggerFactory.getLogger(GeneratedKeyExample.class);
+
+    private static KeyPair generateKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("RSA");
         keyGen.initialize(2048);
         return keyGen.generateKeyPair();
-    }
-
-    public static byte[] getFileHash(String filePath) throws NoSuchAlgorithmException, IOException {
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] fileContent = Files.readAllBytes(Paths.get(filePath));
-        return digest.digest(fileContent);
-    }
-
-    public static byte[] signFile(byte[] hash, PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance("SHA256withRSA");
-        signature.initSign(privateKey);
-        signature.update(hash);
-        return signature.sign();
-    }
-
-    public static boolean verifySignature(byte[] hash, byte[] signatureBytes, PublicKey publicKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException {
-        Signature signature = Signature.getInstance("SHA256withRSA");
-        signature.initVerify(publicKey);
-        signature.update(hash);
-        return signature.verify(signatureBytes);
     }
 
     public static void main(String[] args) {
@@ -50,14 +35,14 @@ public class DigitalSignatureExample {
             // 3. Signature
             byte[] digitalSignature = signFile(fileHash, privateKey);
             String encodedSignature = Base64.getEncoder().encodeToString(digitalSignature);
-            System.out.println("Digital Signature: " + encodedSignature);
+            logger.info("Digital Signature: {}", encodedSignature);
 
             // Store
             Files.write(Paths.get(currentRelativePathAsString + "/signature.sig"), digitalSignature);
 
             // 4. Verify
             boolean isVerified = verifySignature(fileHash, digitalSignature, publicKey);
-            System.out.println("Signature Verified: " + isVerified);
+            logger.info("Signature Verified: {}", isVerified);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -9,9 +9,7 @@ public class SignatureHelper {
 
     static String getCurrentRelativePathAsString() {
         Path currentRelativePath = Paths.get("");
-        String currentRelativePathAsString = currentRelativePath.toAbsolutePath().toString();
-        System.out.println("Current absolute path is: " + currentRelativePathAsString);
-        return currentRelativePathAsString;
+        return currentRelativePath.toAbsolutePath().toString();
     }
 
 }
