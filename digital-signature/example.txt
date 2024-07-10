@@ -1,0 +1,4 @@
+certificate: A123
+certificate_url: http://example.com/A123
+name: A123
+date: 2024-07-09
