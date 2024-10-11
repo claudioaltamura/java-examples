@@ -9,12 +9,12 @@ import java.util.TreeMap;
 
 public class Histogram {
 
-    private Map<String,Long> distributionMap; //K,V verbessern?
-    private int classWidth;
+    private final Map<String,Long> distributionMap; //K,V verbessern?
+    private final int classWidth;
 
     public Histogram() {
-        distributionMap = new TreeMap<>();
-        classWidth = 10;
+        this.classWidth = 10;
+        this.distributionMap = new TreeMap<>();
     }
 
     public Map<String,Long> processData(List<Integer> data) {
@@ -23,7 +23,7 @@ public class Histogram {
         var frequency = calculateFrequency(data);
 
         data.stream()
-                .map(d -> Double.parseDouble(d.toString()))//verbessern?
+                .map(Double::valueOf)
                 .distinct()
                 .forEach(observation -> {
                     long observationFrequency = frequency.getCount(observation);
@@ -42,20 +42,20 @@ public class Histogram {
 
     private Frequency calculateFrequency(List<Integer> data) {
         var frequency = new Frequency();
-        data.forEach(d -> frequency.addValue(Double.parseDouble(d.toString()))); //verbessern?
+        data.forEach(d -> frequency.addValue(Double.parseDouble(d.toString())));
         return frequency;
     }
 
     private void updateDistributionMap(int lowerBoundary, String bin, long observationFrequency) {
         int prevLowerBoundary = (lowerBoundary > classWidth) ? lowerBoundary - classWidth : 0;
         String prevBin = prevLowerBoundary + "-" + lowerBoundary;
-        if(!distributionMap.containsKey(prevBin))
+        if(prevLowerBoundary != lowerBoundary && !distributionMap.containsKey(prevBin))
             distributionMap.put(prevBin, 0L);
         if(!distributionMap.containsKey(bin)) {
             distributionMap.put(bin, observationFrequency);
         }
         else {
-            long oldFrequency = Long.parseLong(distributionMap.get(bin).toString());
+            long oldFrequency = distributionMap.get(bin);
             distributionMap.replace(bin, oldFrequency + observationFrequency);
         }
     }
